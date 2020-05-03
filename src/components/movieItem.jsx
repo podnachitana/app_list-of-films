@@ -3,12 +3,13 @@ import React from 'react';
 class MovieItem extends React.Component {
     constructor() {
         super();
+
         this.state = {
             willWatch: false
         };
     }
     render() {
-        const { movie, removeMovie, addMovieToWillWatch, removeMovieFromWillWatch } = this.props;
+        const { movie, deleteMovie, addMovieToWillWatch, deleteMovieFromWillWatch } = this.props;
         return (
             <div className="card">
                 <img
@@ -28,7 +29,7 @@ class MovieItem extends React.Component {
                                     this.setState({
                                         willWatch:false
                                     });
-                                    removeMovieFromWillWatch(movie);
+                                    deleteMovieFromWillWatch(movie);
                                 }}
                             >
                                 Remove Will Watch
@@ -48,7 +49,7 @@ class MovieItem extends React.Component {
                             </button>
                         )}
                     </div>
-                    <button onClick={removeMovie.bind(null, movie)}>
+                    <button onClick={()=>{deleteMovie(movie)}}>
                         Delete movie
                     </button>
                 </div>

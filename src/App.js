@@ -1,7 +1,9 @@
 import React from 'react';
-import { moviesData } from './moviesData';
+// import { moviesData } from './moviesData';
 import MovieItem from './components/movieItem';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {API_URL, API_KEY_3} from "./untils/api";
+import MovieTabs from "./components/movieTabs";
 
 
 class App extends  React.Component {
@@ -9,12 +11,24 @@ class App extends  React.Component {
     super();
 
     this.state = {
-      movies: moviesData,
-      moviesWillWatch: []
+      movies: [],
+      moviesWillWatch: [],
+      sort_by: "vote_average.desc"
     };
   }
 
-  removeMovie = (movie) => {
+  componentDidMount() {
+    fetch(`${API_URL}/discover/movie?api_key=${API_KEY_3}&sort_by=${this.state.sort_by}`).then((response) => {
+      return response.json()
+    }).then((data) => {
+      console.log(data);
+      this.setState({
+        movies: data.results
+      })
+    })
+  }
+
+  deleteMovie = (movie) => {
     const updateMovies = this.state.movies.filter(function (item) {
       return item.id !== movie.id;
     });
@@ -32,7 +46,7 @@ class App extends  React.Component {
     });
   };
 
-  removeMovieFromWillWatch = (movie) => {
+  deleteMovieFromWillWatch = (movie) => {
     const updateMoviesWillWatch = this.state.moviesWillWatch.filter(function (item) {
       return item.id !== movie.id;
     });
@@ -42,20 +56,33 @@ class App extends  React.Component {
     });
   };
 
+  updateSortBy = value => {
+    this.setState({
+      sort_by: value
+    });
+  }
+
   render() {
     return (
-        <div className="container">
+        <div className="container pt-4">
           <div className="row">
             <div className="col-9">
+              <div className="row pb-4">
+                <div className="col-12">
+                  <MovieTabs
+                      sort_by={this.state.sort_by}
+                      updateSortBy={this.updateSortBy} />
+                </div>
+              </div>
               <div className="row">
                 {this.state.movies.map(movie => {
                   return (
                     <div className="col-6 mb-4" key={movie.id}>
                       <MovieItem
                           movie={movie}
-                          removeMovie={this.removeMovie}
+                          deleteMovie={this.deleteMovie}
                           addMovieToWillWatch={this.addMovieToWillWatch}
-                          removeMovieFromWillWatch={this.removeMovieFromWillWatch}
+                          deleteMovieFromWillWatch={this.deleteMovieFromWillWatch}
                       />
                     </div>
                   );
